@@ -1,0 +1,63 @@
+.ui-badge {
+/* Text Display */
+font-size: 16px;
+font-weight: bold;
+color: #fff;
+text-align: center;
+
+/* Layout */
+padding: 2px 5px;
+margin: 0;
+
+/* Override inherited text shadow */
+text-shadow: 0px -1px 1px #e01b0f;
+}
+
+
+.ui-badge-outer {
+/* Layout */
+background: #fff;
+border: 1px solid #ccc;
+min-width: 22px;
+height: 24px;
+
+/* Round Border Radius */
+border-radius: 18px;
+-moz-border-radius: 18px;
+-webkit-border-radius: 18px;
+
+/* Drop Shadow */
+-moz-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.24);
+-webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.24);
+box-shadow: 0 2px 1px rgba(0, 0, 0, 0.24);
+
+/* Position */
+float: left;
+position: absolute;
+z-index: 9999;
+top: -1px;
+right: -1px;
+}
+
+.ui-badge-inner {
+/* Base Color (red) */
+background: #cc0202;
+
+/* Layout */
+margin: 2px;
+min-width: 20px;
+height: 20px;
+
+/* Round Border Radius */
+border-radius: 15px;
+-moz-border-radius: 15px;
+-webkit-border-radius: 15px;
+
+/* Gradient/Lighting */
+background-image: -webkit-gradient(linear, left top, left bottom, from( #f79690 ), to( #cc0202 )); /* Saf4+, Chrome */
+background-image: -webkit-linear-gradient( #f79690, #cc0202 ); /* Chrome 10+, Saf5.1+ */
+background-image:    -moz-linear-gradient( #f79690, #cc0202 ); /* FF3.6 */
+background-image:     -ms-linear-gradient( #f79690, #cc0202 ); /* IE10 */
+background-image:      -o-linear-gradient( #f79690, #cc0202 ); /* Opera 11.10+ */
+background-image:         linear-gradient( #f79690, #cc0202 );
+}
