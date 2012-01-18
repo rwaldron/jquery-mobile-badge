@@ -43,3 +43,23 @@ test( ".ui-badge-outer children", function() {
 	});
 });
 
+test( "Badges retain attributes from original placeholder (id)", 1, function() {
+	var $context = $("iframe"),
+			$contents = $context.contents();
+
+	equal( $contents.find("#badge-coffee-icon").length, 1, "The placeholder's id was retained" );
+});
+
+test( "Badges retain attributes from original placeholder (class)", 3, function() {
+	var $context = $("iframe"),
+			$contents = $context.contents();
+
+	equal( $contents.find(".foo").length, 1, "A placeholder's class 'foo' was retained" );
+	equal( $contents.find(".bar").length, 1, "A placeholder's class 'bar' was retained" );
+	equal( $contents.find(".baz").length, 1, "A placeholder's class 'baz' was retained" );
+});
+
+
+
+
+
