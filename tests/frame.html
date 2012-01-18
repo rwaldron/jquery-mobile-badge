@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css"/>
+
+	<link rel="stylesheet" href="/css/structure/jquery.mobile.badge.css"/>
+
+
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="//code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+
+	<script src="/js/jquery.mobile.badge.js"></script>
+
+
+</head>
+<body>
+	<!--
+	<span class="ui-badge">1</span>
+	<span class="ui-badge">10000</span>
+	<span class="ui-badge">103</span>
+	-->
+	<div data-role="page">
+
+		<div data-role="header">
+			<h1>Header</h1>
+		</div><!-- /header -->
+
+		<div data-role="content">
+
+			<ul data-role="listview">
+				<li><a href="index.html">
+					<img src="http://jquerymobile.com/demos/1.0/docs/lists/images/album-bb.jpg" />
+					<h3>Broken Bells</h3>
+					<p>Broken Bells</p>
+				</a></li>
+				<li><a href="index.html">
+					<img src="http://jquerymobile.com/demos/1.0/docs/lists/images/album-hc.jpg" />
+					<h3>Warning</h3>
+					<p>Hot Chip</p>
+				</a></li>
+				<li>
+					<a href="index.html">
+						<img src="http://jquerymobile.com/demos/1.0/docs/lists/images/album-p.jpg" />
+						<span data-badge>100</span>
+						<h3>Wolfgang Amadeus Phoenix</h3>
+						<p>Phoenix</p>
+					</a>
+					<!-- <span data-badge>100</span>   -->
+				</li>
+			</ul>
+
+
+		</div><!-- /content -->
+
+
+		<div data-role="footer" data-theme="c">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" id="chat" data-icon="custom">Chat</a></li>
+					<li><a href="#" id="email" data-icon="custom">Email</a><span data-badge>1</span></li>
+					<li><a href="#" id="skull" data-icon="custom">Danger</a></li>
+					<li><a href="#" id="beer" data-icon="custom">Beer</a></li>
+					<li><a href="#" id="coffee" data-icon="custom">Coffee</a><span data-badge>100</span></li>
+				</ul>
+			</div><!-- /navbar -->
+
+		</div><!-- /footer -->
+
+	</div><!-- /page -->
+</body>
+</html>
