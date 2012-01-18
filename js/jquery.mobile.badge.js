@@ -4,15 +4,15 @@ $.widget( "mobile.badge", $.mobile.widget, {
 	selector: ":jqmData(badge)",
 	_create: function() {
 		var self = $( this.element ),
-				owner = self.prev(),
-				value = self.html(),
-				template = [
-					"<div class='ui-badge-outer'>",
-					"<div class='ui-badge-inner'>",
-					"<span class='ui-badge'>",
-					value,
-					"</span></div></div>"
-				].join("");
+			owner = self.prev(),
+			value = self.html(),
+			template = [
+				"<div class='ui-badge-outer'>",
+				"<div class='ui-badge-inner'>",
+				"<span class='ui-badge'>",
+				value,
+				"</span></div></div>"
+			].join("");
 
 
 		console.log(

@@ -11,7 +11,7 @@ MIT Licensed.
 
 It'll look like this when we're done:
 
-<img src="http://dl.dropbox.com/u/3531958/iphone/Photo%20Jan%2018%2C%2012%2014%2047%20PM.png">
+<img src="http://dl.dropbox.com/u/3531958/iphone/Photo%20Jan%2018%2C%204%2049%2033%20PM.png">
 
 
 
