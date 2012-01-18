@@ -5,9 +5,9 @@ WIP.
 
 MIT Licensed.
 
-```
+```html
 <span data-badge>10</span>
-
+```
 
 It'll look like this when we're done:
 
