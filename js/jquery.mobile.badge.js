@@ -5,7 +5,7 @@ var methodMap = {
 };
 
 $.widget( "mobile.badge", $.mobile.widget, {
-	selector: ":jqmData(badge)",
+	selector: ":jqmData(role='badge')",
 	_create: function() {
 		var badge, node, method,
 			self = $( this.element ),
