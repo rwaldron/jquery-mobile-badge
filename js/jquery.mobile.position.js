@@ -13,45 +13,12 @@ $.ui = $.ui || {};
 
 var rhorizontal = /left|center|right/,
 	rvertical = /top|center|bottom/,
-	roffset = /[+-]\d+%?/,
+	roffset = /[+\-]\d+%?/,
 	rposition = /^\w+/,
 	rpercent = /%$/,
 	center = "center",
 	_position = $.fn.position;
 
-$.position = {
-	scrollbarWidth: function() {
-		var w1, w2,
-			div = $( "<div style='display:block;width:50px;height:50px;overflow:hidden;'><div style='height:100px;width:auto;'></div></div>" ),
-			innerDiv = div.children()[0];
-
-		$( "body" ).append( div );
-		w1 = innerDiv.offsetWidth;
-		div.css( "overflow", "scroll" );
-
-		w2 = innerDiv.offsetWidth;
-
-		if ( w1 === w2 ) {
-			w2 = div[0].clientWidth;
-		}
-
-		div.remove();
-
-		return w1 - w2;
-	},
-	getScrollInfo: function(within) {
-		var notWindow = within[0] !== window,
-			overflowX = notWindow ? within.css( "overflow-x" ) : "",
-			overflowY = notWindow ? within.css( "overflow-y" ) : "",
-			scrollbarWidth = overflowX === "auto" || overflowX === "scroll" ? $.position.scrollbarWidth() : 0,
-			scrollbarHeight = overflowY === "auto" || overflowY === "scroll" ? $.position.scrollbarWidth() : 0;
-
-		return {
-			height: within.height() < within[0].scrollHeight ? scrollbarHeight : 0,
-			width: within.width() < within[0].scrollWidth ? scrollbarWidth : 0
-		};
-	}
-};
 
 $.fn.position = function( options ) {
 	if ( !options || !options.of ) {
@@ -62,9 +29,7 @@ $.fn.position = function( options ) {
 	options = $.extend( {}, options );
 
 	var target = $( options.of ),
-		within  = $( options.within || window ),
 		targetElem = target[0],
-		collision = ( options.collision || "flip" ).split( " " ),
 		offsets = {},
 		atOffset,
 		targetWidth,
@@ -122,11 +87,6 @@ $.fn.position = function( options ) {
 		];
 	});
 
-	// normalize collision option
-	if ( collision.length === 1 ) {
-		collision[ 1 ] = collision[ 0 ];
-	}
-
 	if ( options.at[ 0 ] === "right" ) {
 		basePosition.left += targetWidth;
 	} else if ( options.at[ 0 ] === center ) {
@@ -152,21 +112,13 @@ $.fn.position = function( options ) {
 		var elem = $( this ),
 			elemWidth = elem.outerWidth(),
 			elemHeight = elem.outerHeight(),
-			marginLeft = parseInt( $.curCSS( this, "marginLeft", true ) ) || 0,
-			marginTop = parseInt( $.curCSS( this, "marginTop", true ) ) || 0,
-			scrollInfo = $.position.getScrollInfo( within ),
-			collisionWidth = elemWidth + marginLeft +
-				( parseInt( $.curCSS( this, "marginRight", true ) ) || 0 ) + scrollInfo.width,
-			collisionHeight = elemHeight + marginTop +
-				( parseInt( $.curCSS( this, "marginBottom", true ) ) || 0 ) + scrollInfo.height,
 			position = $.extend( {}, basePosition ),
 			myOffset = [
 				parseInt( offsets.my[ 0 ], 10 ) *
 					( rpercent.test( offsets.my[ 0 ] ) ? elem.outerWidth() / 100 : 1 ),
 				parseInt( offsets.my[ 1 ], 10 ) *
 					( rpercent.test( offsets.my[ 1 ] ) ? elem.outerHeight() / 100 : 1 )
-			],
-			collisionPosition;
+			];
 
 		if ( options.my[ 0 ] === "right" ) {
 			position.left -= elemWidth;
@@ -183,228 +135,8 @@ $.fn.position = function( options ) {
 		position.left += myOffset[ 0 ];
 		position.top += myOffset[ 1 ];
 
-		collisionPosition = {
-			marginLeft: marginLeft,
-			marginTop: marginTop
-		};
-
-		$.each( [ "left", "top" ], function( i, dir ) {
-			if ( $.ui.position[ collision[ i ] ] ) {
-				$.ui.position[ collision[ i ] ][ dir ]( position, {
-					targetWidth: targetWidth,
-					targetHeight: targetHeight,
-					elemWidth: elemWidth,
-					elemHeight: elemHeight,
-					collisionPosition: collisionPosition,
-					collisionWidth: collisionWidth,
-					collisionHeight: collisionHeight,
-					offset: [ atOffset[ 0 ] + myOffset[ 0 ], atOffset [ 1 ] + myOffset[ 1 ] ],
-					my: options.my,
-					at: options.at,
-					within: within,
-					elem : elem
-				});
-			}
-		});
-
-		if ( $.fn.bgiframe ) {
-			elem.bgiframe();
-		}
 		elem.offset( $.extend( position, { using: options.using } ) );
 	});
 };
-
-$.ui.position = {
-	fit: {
-		left: function( position, data ) {
-			var within = data.within,
-				win = $( window ),
-				isWindow = $.isWindow( data.within[0] ),
-				withinOffset = isWindow ? win.scrollLeft() : within.offset().left,
-				outerWidth = isWindow ? win.width() : within.outerWidth(),
-				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
-				overLeft = withinOffset - collisionPosLeft,
-				overRight = collisionPosLeft + data.collisionWidth - outerWidth - withinOffset,
-				newOverRight,
-				newOverLeft;
-
-			// element is wider than within
-			if ( data.collisionWidth > outerWidth ) {
-				// element is initially over the left side of within
-				if ( overLeft > 0 && overRight <= 0 ) {
-					newOverRight = position.left + overLeft + data.collisionWidth - outerWidth - withinOffset;
-					position.left += overLeft - newOverRight;
-				// element is initially over right side of within
-				} else if ( overRight > 0 && overLeft <= 0 ) {
-					position.left = withinOffset;
-				// element is initially over both left and right sides of within
-				} else {
-					if ( overLeft > overRight ) {
-						position.left = withinOffset + outerWidth - data.collisionWidth;
-					} else {
-						position.left = withinOffset;
-					}
-				}
-			// too far left -> align with left edge
-			} else if ( overLeft > 0 ) {
-				position.left += overLeft;
-			// too far right -> align with right edge
-			} else if ( overRight > 0 ) {
-				position.left -= overRight;
-			// adjust based on position and margin
-			} else {
-				position.left = Math.max( position.left - collisionPosLeft, position.left );
-			}
-		},
-		top: function( position, data ) {
-			var within = data.within,
-				win = $( window ),
-				isWindow = $.isWindow( data.within[0] ),
-				withinOffset = isWindow ? win.scrollTop() : within.offset().top,
-				outerHeight = isWindow ? win.height() : within.outerHeight(),
-				collisionPosTop = position.top - data.collisionPosition.marginTop,
-				overTop = withinOffset - collisionPosTop,
-				overBottom = collisionPosTop + data.collisionHeight - outerHeight - withinOffset,
-				newOverTop,
-				newOverBottom;
-
-			// element is taller than within
-			if ( data.collisionHeight > outerHeight ) {
-				// element is initially over the top of within
-				if ( overTop > 0 && overBottom <= 0 ) {
-					newOverBottom = position.top + overTop + data.collisionHeight - outerHeight - withinOffset;
-					position.top += overTop - newOverBottom;
-				// element is initially over bottom of within
-				} else if ( overBottom > 0 && overTop <= 0 ) {
-					position.top = withinOffset;
-				// element is initially over both top and bottom of within
-				} else {
-					if ( overTop > overBottom ) {
-						position.top = withinOffset + outerHeight - data.collisionHeight;
-					} else {
-						position.top = withinOffset;
-					}
-				}
-			// too far up -> align with top
-			} else if ( overTop > 0 ) {
-				position.top += overTop;
-			// too far down -> align with bottom edge
-			} else if ( overBottom > 0 ) {
-				position.top -= overBottom;
-			// adjust based on position and margin
-			} else {
-				position.top = Math.max( position.top - collisionPosTop, position.top );
-			}
-		}
-	},
-	flip: {
-		left: function( position, data ) {
-			if ( data.at[ 0 ] === center ) {
-				return;
-			}
-
-			data.elem
-				.removeClass( "ui-flipped-left ui-flipped-right" );
-
-			var within = data.within,
-				win = $( window ),
-				isWindow = $.isWindow( data.within[0] ),
-				withinOffset = ( isWindow ? 0 : within.offset().left ) + within.scrollLeft(),
-				outerWidth = isWindow ? within.width() : within.outerWidth(),
-				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
-				overLeft = collisionPosLeft - withinOffset,
-				overRight = collisionPosLeft + data.collisionWidth - outerWidth - withinOffset,
-				left = data.my[ 0 ] === "left",
-				myOffset = data.my[ 0 ] === "left" ?
-					-data.elemWidth :
-					data.my[ 0 ] === "right" ?
-						data.elemWidth :
-						0,
-				atOffset = data.at[ 0 ] === "left" ?
-					data.targetWidth :
-					-data.targetWidth,
-				offset = -2 * data.offset[ 0 ],
-				newOverRight,
-				newOverLeft;
-
-			if ( overLeft < 0 ) {
-				newOverRight = position.left + myOffset + atOffset + offset + data.collisionWidth - outerWidth - withinOffset;
-				if ( newOverRight < 0 || newOverRight < Math.abs( overLeft ) ) {
-					data.elem
-						.addClass( "ui-flipped-right" );
-
-					position.left += myOffset + atOffset + offset;
-				}
-			}
-			else if ( overRight > 0 ) {
-				newOverLeft = position.left - data.collisionPosition.marginLeft + myOffset + atOffset + offset - withinOffset;
-				if ( newOverLeft > 0 || Math.abs( newOverLeft ) < overRight ) {
-					data.elem
-						.addClass( "ui-flipped-left" );
-
-					position.left += myOffset + atOffset + offset;
-				}
-			}
-		},
-		top: function( position, data ) {
-			if ( data.at[ 1 ] === center ) {
-				return;
-			}
-
-			data.elem
-				.removeClass( "ui-flipped-top ui-flipped-bottom" );
-
-			var within = data.within,
-				win = $( window ),
-				isWindow = $.isWindow( data.within[0] ),
-				withinOffset = ( isWindow ? 0 : within.offset().top ) + within.scrollTop(),
-				outerHeight = isWindow ? within.height() : within.outerHeight(),
-				collisionPosTop = position.top - data.collisionPosition.marginTop,
-				overTop = collisionPosTop - withinOffset,
-				overBottom = collisionPosTop + data.collisionHeight - outerHeight - withinOffset,
-				top = data.my[ 1 ] === "top",
-				myOffset = top ?
-					-data.elemHeight :
-					data.my[ 1 ] === "bottom" ?
-						data.elemHeight :
-						0,
-				atOffset = data.at[ 1 ] === "top" ?
-					data.targetHeight :
-					-data.targetHeight,
-				offset = -2 * data.offset[ 1 ],
-				newOverTop,
-				newOverBottom;
-			if ( overTop < 0 ) {
-				newOverBottom = position.top + myOffset + atOffset + offset + data.collisionHeight - outerHeight - withinOffset;
-				if ( ( position.top + myOffset + atOffset + offset) > overTop && ( newOverBottom < 0 || newOverBottom < Math.abs( overTop ) ) ) {
-					data.elem
-						.addClass( "ui-flipped-bottom" );
-
-					position.top += myOffset + atOffset + offset;
-				}
-			}
-			else if ( overBottom > 0 ) {
-				newOverTop = position.top -  data.collisionPosition.marginTop + myOffset + atOffset + offset - withinOffset;
-				if ( ( position.top + myOffset + atOffset + offset) > overBottom && ( newOverTop > 0 || Math.abs( newOverTop ) < overBottom ) ) {
-					data.elem
-						.addClass( "ui-flipped-top" );
-
-					position.top += myOffset + atOffset + offset;
-				}
-			}
-		}
-	},
-	flipfit: {
-		left: function() {
-			$.ui.position.flip.left.apply( this, arguments );
-			$.ui.position.fit.left.apply( this, arguments );
-		},
-		top: function() {
-			$.ui.position.flip.top.apply( this, arguments );
-			$.ui.position.fit.top.apply( this, arguments );
-		}
-	}
-};
-
 
 }( jQuery ) );
