@@ -59,7 +59,12 @@ test( "Badges retain attributes from original placeholder (class)", 3, function(
 	equal( $contents.find(".baz").length, 1, "A placeholder's class 'baz' was retained" );
 });
 
+test( "updates made to the original dom object work", function() {
+	var $contents = $("iframe").contents(),
+		frame = window.frames["test-frame"],
+		ref = frame.jQuery("#manual-badge");
 
-
-
-
+	ref.badge();
+	ref.html("2");
+	same( $contents.find("#manual-badge").html(), "2", "updates to old dom object refs will not propogate" );
+});
