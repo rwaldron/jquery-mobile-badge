@@ -21,17 +21,14 @@ $.widget( "mobile.badge", $.mobile.widget, {
 		// Render badge markup from "template"
 		badge = $(template);
 
-		// Create a clone to append into the rendered badge
-		node = self.clone().addClass("ui-badge");
+		// Detach the original to append into the rendered badge
+		node = self.detach().addClass("ui-badge");
 
 		// jQuery collection reference to the inner badge node.
 		// This will be used as the target for the cloned badge "node"
 		badge.find(".ui-badge-inner").append(
 			node
 		);
-
-		// Remove Place Holder
-		self.remove();
 
 		// Determine the correct insertion operation to use
 		method = methodMap[ owner[0].nodeName ] || "append";
