@@ -1,10 +1,15 @@
 (function( window, document, $, undefined ) {
 
+var methodMap = {
+	IMG: "after"
+};
+
 $.widget( "mobile.badge", $.mobile.widget, {
 	selector: ":jqmData(badge)",
 	_create: function() {
 		var badge, node, method,
 			self = $( this.element ),
+			page = self.closest("div[data-role='page']"),
 			owner = self.prev(),
 			value = self.html(),
 			template = [
@@ -25,22 +30,31 @@ $.widget( "mobile.badge", $.mobile.widget, {
 			node
 		);
 
-
-		console.log(
-			owner,
-			owner.offset(),
-			owner.position().top,
-			owner.position().left,
-			owner.css("top")
-		);
-
 		// Remove Place Holder
 		self.remove();
 
+		// Determine the correct insertion operation to use
+		method = methodMap[ owner[0].nodeName ] || "append";
+
 		// Insert rendered badge inside owner
-		owner.append(
+		owner[ method ](
 			badge
 		);
+
+		// Using the position utility provided by
+		// jquery.mobile.position.js
+		badge.position({
+			// set the position of the badge's "right top"...
+			my: "right top",
+			// ...to the "right top"...
+			at: "right-1 top-1",
+			// ...of the "owner" element
+			of: owner
+		}).css({
+			// Reset the left style to auto,
+			// this results in the badge being displayed with the correct width
+			left: "auto"
+		});
 	}
 });
 
